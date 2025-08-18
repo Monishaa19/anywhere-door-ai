@@ -22,6 +22,57 @@ const TripPlannerForm: React.FC = () => {
     transportMode: 'flight',
   });
 
+  // Auto-sync dates and duration
+  const handleStartDateChange = (date: string) => {
+    const newFormData = { ...formData, startDate: date };
+    
+    if (date && formData.endDate) {
+      // Calculate duration when both dates are set
+      const start = new Date(date);
+      const end = new Date(formData.endDate);
+      const diffTime = Math.abs(end.getTime() - start.getTime());
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      newFormData.duration = [Math.max(1, diffDays)];
+    } else if (date && formData.duration[0]) {
+      // Calculate end date when start date and duration are set
+      const start = new Date(date);
+      const end = new Date(start);
+      end.setDate(start.getDate() + formData.duration[0]);
+      newFormData.endDate = end.toISOString().split('T')[0];
+    }
+    
+    setFormData(newFormData);
+  };
+
+  const handleEndDateChange = (date: string) => {
+    const newFormData = { ...formData, endDate: date };
+    
+    if (formData.startDate && date) {
+      // Calculate duration when both dates are set
+      const start = new Date(formData.startDate);
+      const end = new Date(date);
+      const diffTime = Math.abs(end.getTime() - start.getTime());
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      newFormData.duration = [Math.max(1, diffDays)];
+    }
+    
+    setFormData(newFormData);
+  };
+
+  const handleDurationChange = (duration: number[]) => {
+    const newFormData = { ...formData, duration };
+    
+    if (formData.startDate && duration[0]) {
+      // Calculate end date when start date and duration are set
+      const start = new Date(formData.startDate);
+      const end = new Date(start);
+      end.setDate(start.getDate() + duration[0]);
+      newFormData.endDate = end.toISOString().split('T')[0];
+    }
+    
+    setFormData(newFormData);
+  };
+
   const [locationRequested, setLocationRequested] = useState(false);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -81,12 +132,19 @@ const TripPlannerForm: React.FC = () => {
     setIsSubmitting(true);
     
     try {
+      // Prepare form data with budget description
+      const budgetDescription = budgetOptions.find(b => b.value === formData.budget)?.description || formData.budget;
+      const submitData = {
+        ...formData,
+        budget: budgetDescription
+      };
+
       const response = await fetch('https://thenameismonisha.app.n8n.cloud/webhook-test/190ece94-13f5-4a98-a50a-c97ccd4459da', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData)
+        body: JSON.stringify(submitData)
       });
 
       if (response.ok) {
@@ -160,19 +218,23 @@ const TripPlannerForm: React.FC = () => {
                     <MapPin className="w-4 h-4" />
                     Destination
                   </Label>
-                  <Select value={formData.destination} onValueChange={(value) => setFormData({...formData, destination: value})}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Where do you want to go?" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="paris">Paris, France</SelectItem>
-                      <SelectItem value="tokyo">Tokyo, Japan</SelectItem>
-                      <SelectItem value="new-york">New York, USA</SelectItem>
-                      <SelectItem value="dubai">Dubai, UAE</SelectItem>
-                      <SelectItem value="bali">Bali, Indonesia</SelectItem>
-                      <SelectItem value="other">Other...</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <Input
+                    id="destination"
+                    placeholder="Where do you want to go? (e.g., Paris, Tokyo, Dubai)"
+                    value={formData.destination}
+                    onChange={(e) => setFormData({...formData, destination: e.target.value})}
+                    list="popular-destinations"
+                  />
+                  <datalist id="popular-destinations">
+                    <option value="Paris, France" />
+                    <option value="Tokyo, Japan" />
+                    <option value="New York, USA" />
+                    <option value="Dubai, UAE" />
+                    <option value="Bali, Indonesia" />
+                    <option value="London, UK" />
+                    <option value="Rome, Italy" />
+                    <option value="Bangkok, Thailand" />
+                  </datalist>
                 </div>
 
                 <div className="space-y-2">
@@ -212,7 +274,7 @@ const TripPlannerForm: React.FC = () => {
                   <Input
                     type="date"
                     value={formData.startDate}
-                    onChange={(e) => setFormData({...formData, startDate: e.target.value})}
+                    onChange={(e) => handleStartDateChange(e.target.value)}
                   />
                 </div>
 
@@ -224,7 +286,7 @@ const TripPlannerForm: React.FC = () => {
                   <Input
                     type="date"
                     value={formData.endDate}
-                    onChange={(e) => setFormData({...formData, endDate: e.target.value})}
+                    onChange={(e) => handleEndDateChange(e.target.value)}
                   />
                 </div>
               </div>
@@ -237,14 +299,14 @@ const TripPlannerForm: React.FC = () => {
                 </Label>
                 <Slider
                   value={formData.duration}
-                  onValueChange={(value) => setFormData({...formData, duration: value})}
+                  onValueChange={handleDurationChange}
                   max={14}
-                  min={3}
+                  min={1}
                   step={1}
                   className="w-full"
                 />
                 <div className="flex justify-between text-sm text-muted-foreground">
-                  <span>3 days</span>
+                  <span>1 day</span>
                   <span>14 days</span>
                 </div>
               </div>
@@ -312,22 +374,19 @@ const TripPlannerForm: React.FC = () => {
               {/* Group Size & Transport Mode */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <Label className="flex items-center gap-2 font-medium">
+                  <Label htmlFor="groupSize" className="flex items-center gap-2 font-medium">
                     <Users className="w-4 h-4" />
                     Group Size
                   </Label>
-                  <Select value={formData.groupSize} onValueChange={(value) => setFormData({...formData, groupSize: value})}>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="1">Solo traveler</SelectItem>
-                      <SelectItem value="2">Couple (2 people)</SelectItem>
-                      <SelectItem value="3-4">Small group (3-4 people)</SelectItem>
-                      <SelectItem value="5-8">Medium group (5-8 people)</SelectItem>
-                      <SelectItem value="9+">Large group (9+ people)</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <Input
+                    id="groupSize"
+                    type="number"
+                    min="1"
+                    max="50"
+                    placeholder="How many people?"
+                    value={formData.groupSize}
+                    onChange={(e) => setFormData({...formData, groupSize: e.target.value})}
+                  />
                 </div>
 
                 <div className="space-y-2">
