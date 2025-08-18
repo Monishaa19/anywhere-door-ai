@@ -9,7 +9,12 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { CalendarIcon, MapPin, Users, Clock, DollarSign, Heart } from 'lucide-react';
 
-const TripPlannerForm: React.FC = () => {
+interface TripPlannerFormProps {
+  userName?: string;
+  userEmail?: string;
+}
+
+const TripPlannerForm: React.FC<TripPlannerFormProps> = ({ userName, userEmail }) => {
   const [formData, setFormData] = useState({
     destination: '',
     currentCity: '',

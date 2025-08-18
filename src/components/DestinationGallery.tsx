@@ -82,7 +82,7 @@ const DestinationGallery: React.FC<DestinationGalleryProps> = ({ onDestinationCl
           <p className="text-muted-foreground mb-6">
             Ready to plan your next adventure?
           </p>
-          <Button variant="elegant" size="lg">
+          <Button variant="elegant" size="lg" onClick={onDestinationClick}>
             Start Planning Now
           </Button>
         </div>
