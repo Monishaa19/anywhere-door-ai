@@ -6,6 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Slider } from '@/components/ui/slider';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { useToast } from '@/hooks/use-toast';
 import { CalendarIcon, MapPin, Users, Clock, DollarSign, Heart } from 'lucide-react';
 
 const TripPlannerForm: React.FC = () => {
@@ -24,6 +25,7 @@ const TripPlannerForm: React.FC = () => {
   const [locationRequested, setLocationRequested] = useState(false);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { toast } = useToast();
 
   const requestLocation = () => {
     if (navigator.geolocation && !locationRequested) {
@@ -53,13 +55,57 @@ const TripPlannerForm: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validate mandatory fields (all except startDate, endDate, travelStyle)
+    const mandatoryFields = [
+      { field: 'destination', label: 'Destination' },
+      { field: 'currentCity', label: 'Current City' },
+      { field: 'groupSize', label: 'Group Size' },
+      { field: 'transportMode', label: 'Mode of Transport' }
+    ];
+
+    // Check for missing mandatory fields
+    const missingFields = mandatoryFields.filter(({ field }) => 
+      !formData[field as keyof typeof formData] || formData[field as keyof typeof formData] === ''
+    );
+
+    if (missingFields.length > 0) {
+      toast({
+        title: "Missing Required Fields",
+        description: `Please fill in: ${missingFields.map(f => f.label).join(', ')}`,
+        variant: "destructive"
+      });
+      return;
+    }
+
     setIsSubmitting(true);
     
-    // Simulate AI processing
-    setTimeout(() => {
+    try {
+      const response = await fetch('https://thenameismonisha.app.n8n.cloud/webhook-test/190ece94-13f5-4a98-a50a-c97ccd4459da', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData)
+      });
+
+      if (response.ok) {
+        toast({
+          title: "Success!",
+          description: "Your personalized itinerary will be sent to your email shortly!",
+        });
+      } else {
+        throw new Error('Failed to submit form');
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Something went wrong. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
       setIsSubmitting(false);
-      alert('Your personalized itinerary will be sent to your email shortly!');
-    }, 3000);
+    }
   };
 
   const budgetOptions = [
@@ -114,7 +160,7 @@ const TripPlannerForm: React.FC = () => {
                     <MapPin className="w-4 h-4" />
                     Destination
                   </Label>
-                  <Select>
+                  <Select value={formData.destination} onValueChange={(value) => setFormData({...formData, destination: value})}>
                     <SelectTrigger>
                       <SelectValue placeholder="Where do you want to go?" />
                     </SelectTrigger>

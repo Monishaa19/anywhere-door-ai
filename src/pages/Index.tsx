@@ -4,6 +4,7 @@ import DestinationGallery from '@/components/DestinationGallery';
 import TripPlannerForm from '@/components/TripPlannerForm';
 import HowItWorks from '@/components/HowItWorks';
 import Footer from '@/components/Footer';
+import { Toaster } from '@/components/ui/toaster';
 
 const Index = () => {
   const plannerRef = useRef<HTMLDivElement>(null);
@@ -37,6 +38,9 @@ const Index = () => {
       
       {/* Footer */}
       <Footer />
+      
+      {/* Toast notifications */}
+      <Toaster />
     </div>
   );
 };
