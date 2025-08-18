@@ -141,7 +141,9 @@ const TripPlannerForm: React.FC<TripPlannerFormProps> = ({ userName, userEmail }
       const budgetDescription = budgetOptions.find(b => b.value === formData.budget)?.description || formData.budget;
       const submitData = {
         ...formData,
-        budget: budgetDescription
+        budget: budgetDescription,
+        name: userName || '',
+        email: userEmail || ''
       };
 
       const response = await fetch('https://thenameismonisha.app.n8n.cloud/webhook-test/190ece94-13f5-4a98-a50a-c97ccd4459da', {
