@@ -22,7 +22,7 @@ const Index = () => {
       
       {/* Destination Gallery */}
       <div id="destinations">
-        <DestinationGallery />
+        <DestinationGallery onDestinationClick={scrollToPlanner} />
       </div>
       
       {/* Trip Planner Form */}

@@ -21,8 +21,8 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onPlanTripClick }) => {
       </div>
       
       {/* Floating Globe Animation */}
-      <div className="absolute top-20 right-20 animate-float opacity-30">
-        <div className="w-32 h-32 rounded-full bg-gradient-accent animate-pulse-glow"></div>
+      <div className="absolute top-20 right-20 animate-float opacity-40">
+        <div className="w-32 h-32 rounded-full bg-gradient-accent animate-pulse-glow animate-rotate-globe"></div>
       </div>
       
       {/* Content */}

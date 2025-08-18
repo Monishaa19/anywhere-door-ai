@@ -18,9 +18,38 @@ const TripPlannerForm: React.FC = () => {
     budget: 'mid-range',
     travelStyle: [],
     groupSize: '2',
+    transportMode: 'flight',
   });
 
+  const [locationRequested, setLocationRequested] = useState(false);
+
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const requestLocation = () => {
+    if (navigator.geolocation && !locationRequested) {
+      setLocationRequested(true);
+      navigator.geolocation.getCurrentPosition(
+        async (position) => {
+          try {
+            const response = await fetch(
+              `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${position.coords.latitude}&longitude=${position.coords.longitude}&localityLanguage=en`
+            );
+            const data = await response.json();
+            setFormData({...formData, currentCity: data.city || data.locality || 'Unknown'});
+          } catch (error) {
+            console.error('Error getting location:', error);
+          }
+        },
+        (error) => {
+          console.error('Geolocation error:', error);
+        }
+      );
+    }
+  };
+
+  React.useEffect(() => {
+    requestLocation();
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,9 +63,16 @@ const TripPlannerForm: React.FC = () => {
   };
 
   const budgetOptions = [
-    { value: 'budget', label: '$ Budget', description: 'Under $100/day' },
-    { value: 'mid-range', label: '$$ Mid-Range', description: '$100-300/day' },
-    { value: 'luxury', label: '$$$ Luxury', description: '$300+/day' },
+    { value: 'budget', label: '₹ Budget', description: 'Under ₹8,000/day' },
+    { value: 'mid-range', label: '₹₹ Mid-Range', description: '₹8,000-25,000/day' },
+    { value: 'luxury', label: '₹₹₹ Luxury', description: '₹25,000+/day' },
+  ];
+
+  const transportOptions = [
+    { value: 'flight', label: 'Flight' },
+    { value: 'train', label: 'Train' },
+    { value: 'ship', label: 'Ship' },
+    { value: 'bus', label: 'Bus' },
   ];
 
   const travelStyles = [
@@ -98,12 +134,25 @@ const TripPlannerForm: React.FC = () => {
                     <MapPin className="w-4 h-4" />
                     Current City
                   </Label>
-                  <Input
-                    id="currentCity"
-                    placeholder="Where are you traveling from?"
-                    value={formData.currentCity}
-                    onChange={(e) => setFormData({...formData, currentCity: e.target.value})}
-                  />
+                  <div className="relative">
+                    <Input
+                      id="currentCity"
+                      placeholder="Where are you traveling from?"
+                      value={formData.currentCity}
+                      onChange={(e) => setFormData({...formData, currentCity: e.target.value})}
+                    />
+                    {!formData.currentCity && (
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        className="absolute right-2 top-1/2 -translate-y-1/2"
+                        onClick={requestLocation}
+                      >
+                        Use Current Location
+                      </Button>
+                    )}
+                  </div>
                 </div>
               </div>
 
@@ -214,24 +263,45 @@ const TripPlannerForm: React.FC = () => {
                 </div>
               </div>
 
-              {/* Group Size */}
-              <div className="space-y-2">
-                <Label className="flex items-center gap-2 font-medium">
-                  <Users className="w-4 h-4" />
-                  Group Size
-                </Label>
-                <Select value={formData.groupSize} onValueChange={(value) => setFormData({...formData, groupSize: value})}>
-                  <SelectTrigger className="w-full md:w-48">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="1">Solo traveler</SelectItem>
-                    <SelectItem value="2">Couple (2 people)</SelectItem>
-                    <SelectItem value="3-4">Small group (3-4 people)</SelectItem>
-                    <SelectItem value="5-8">Medium group (5-8 people)</SelectItem>
-                    <SelectItem value="9+">Large group (9+ people)</SelectItem>
-                  </SelectContent>
-                </Select>
+              {/* Group Size & Transport Mode */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <Label className="flex items-center gap-2 font-medium">
+                    <Users className="w-4 h-4" />
+                    Group Size
+                  </Label>
+                  <Select value={formData.groupSize} onValueChange={(value) => setFormData({...formData, groupSize: value})}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="1">Solo traveler</SelectItem>
+                      <SelectItem value="2">Couple (2 people)</SelectItem>
+                      <SelectItem value="3-4">Small group (3-4 people)</SelectItem>
+                      <SelectItem value="5-8">Medium group (5-8 people)</SelectItem>
+                      <SelectItem value="9+">Large group (9+ people)</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label className="flex items-center gap-2 font-medium">
+                    <MapPin className="w-4 h-4" />
+                    Mode of Transport
+                  </Label>
+                  <Select value={formData.transportMode} onValueChange={(value) => setFormData({...formData, transportMode: value})}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {transportOptions.map((option) => (
+                        <SelectItem key={option.value} value={option.value}>
+                          {option.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
 
               {/* Submit Button */}

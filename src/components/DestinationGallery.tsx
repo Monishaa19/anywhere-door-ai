@@ -7,6 +7,8 @@ import pisaTower from '@/assets/destinations/pisa-tower.jpg';
 import eiffelTower from '@/assets/destinations/eiffel-tower.jpg';
 import santorini from '@/assets/destinations/santorini.jpg';
 import greatWall from '@/assets/destinations/great-wall.jpg';
+import machuPicchu from '@/assets/destinations/machu-picchu.jpg';
+import sydneyOpera from '@/assets/destinations/sydney-opera.jpg';
 
 const destinations = [
   { name: 'Burj Khalifa', location: 'Dubai', image: burjKhalifa },
@@ -16,9 +18,15 @@ const destinations = [
   { name: 'Eiffel Tower', location: 'Paris', image: eiffelTower },
   { name: 'Santorini', location: 'Greece', image: santorini },
   { name: 'Great Wall', location: 'China', image: greatWall },
+  { name: 'Machu Picchu', location: 'Peru', image: machuPicchu },
+  { name: 'Sydney Opera House', location: 'Australia', image: sydneyOpera },
 ];
 
-const DestinationGallery: React.FC = () => {
+interface DestinationGalleryProps {
+  onDestinationClick: () => void;
+}
+
+const DestinationGallery: React.FC<DestinationGalleryProps> = ({ onDestinationClick }) => {
   return (
     <section className="py-20 px-4 bg-background">
       <div className="max-w-7xl mx-auto">
@@ -35,8 +43,9 @@ const DestinationGallery: React.FC = () => {
           {destinations.map((destination, index) => (
             <div
               key={destination.name}
-              className="group relative aspect-video rounded-lg overflow-hidden shadow-card hover:shadow-elegant transition-smooth hover-lift"
+              className="group relative aspect-video rounded-lg overflow-hidden shadow-card hover:shadow-elegant transition-smooth hover-lift cursor-pointer"
               style={{ animationDelay: `${index * 0.1}s` }}
+              onClick={onDestinationClick}
             >
               <img
                 src={destination.image}
