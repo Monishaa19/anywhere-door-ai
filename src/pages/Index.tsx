@@ -65,6 +65,7 @@ const Index = () => {
       <Navigation currentStep={currentStep} onStepChange={handleStepChange} />
       {renderCurrentStep()}
       <Toaster />
+      <vapi-widget assistant-id="f3e5e8d1-dc15-497f-b187-904279398508" public-key="a93b060a-e811-4d43-8ca2-23ad3a3d9e68"></vapi-widget>
     </div>
   );
 };
