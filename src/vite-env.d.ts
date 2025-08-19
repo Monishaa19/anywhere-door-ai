@@ -8,9 +8,3 @@ declare namespace JSX {
     };
   }
 }
-
-declare global {
-  interface Window {
-    handleTripPlanning: (tripData: any) => Promise<string>;
-  }
-}
