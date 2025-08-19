@@ -164,17 +164,29 @@ const Index = () => {
       <Navigation currentStep={currentStep} onStepChange={handleStepChange} />
       {renderCurrentStep()}
       <Toaster />
-      <vapi-widget 
-        assistant-id="f3e5e8d1-dc15-497f-b187-904279398508" 
+      <vapi-widget
         public-key="a93b060a-e811-4d43-8ca2-23ad3a3d9e68"
-        style={{ 
-          position: 'fixed', 
-          bottom: '20px', 
-          right: '20px', 
-          width: '80px', 
-          height: '80px',
-          zIndex: 1000 
-        }}
+        assistant-id="f3e5e8d1-dc15-497f-b187-904279398508"
+        mode="voice"
+        theme="dark"
+        base-bg-color="#000000"
+        accent-color="#14B8A6"
+        cta-button-color="#000000"
+        cta-button-text-color="#ffffff"
+        border-radius="large"
+        size="full"
+        position="bottom-right"
+        title="TALK WITH DORA"
+        start-button-text="Start"
+        end-button-text="End Call"
+        cta-subtitle="voice enabled inputs support"
+        chat-first-message="Hey, How can I help you today?"
+        chat-placeholder="Type your message..."
+        voice-show-transcript="true"
+        consent-required="true"
+        consent-title="Terms and conditions"
+        consent-content="By clicking 'Agree,' and each time I interact with this AI agent, I consent to the recording, storage, and sharing of my communications with third-party service providers, and as otherwise described in our Terms of Service."
+        consent-storage-key="vapi_widget_consent"
       ></vapi-widget>
     </div>
   );
