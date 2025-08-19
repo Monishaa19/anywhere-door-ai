@@ -24,25 +24,16 @@ export default {
 				'sans': ['Lato', 'sans-serif'],
 			},
 			colors: {
-				ivory: 'hsl(var(--ivory))',
-				taupe: {
-					DEFAULT: 'hsl(var(--taupe))',
-					dark: 'hsl(var(--taupe-dark))',
+				'doraemon-blue': {
+					DEFAULT: 'hsl(var(--doraemon-blue))',
+					dark: 'hsl(var(--doraemon-blue-dark))',
 				},
-				'slate-blue': {
-					DEFAULT: 'hsl(var(--slate-blue))',
-					light: 'hsl(var(--slate-blue-light))',
-					dark: 'hsl(var(--slate-blue-dark))',
-				},
-				gold: {
-					DEFAULT: 'hsl(var(--gold))',
-					light: 'hsl(var(--gold-light))',
-				},
-				sage: {
-					DEFAULT: 'hsl(var(--sage))',
-					light: 'hsl(var(--sage-light))',
-					dark: 'hsl(var(--sage-dark))',
-				},
+				'doraemon-white': 'hsl(var(--doraemon-white))',
+				'doraemon-red': 'hsl(var(--doraemon-red))',
+				'doraemon-yellow': 'hsl(var(--doraemon-yellow))',
+				'door-pink': 'hsl(var(--door-pink))',
+				'door-brown': 'hsl(var(--door-brown))',
+				'portal-purple': 'hsl(var(--portal-purple))',
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',
 				ring: 'hsl(var(--ring))',

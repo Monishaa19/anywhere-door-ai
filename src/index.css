@@ -8,55 +8,52 @@
 
 @layer base {
   :root {
-    /* Brand Colors - Soft Neutrals with Gold/Sage Accents */
-    --ivory: 50 20% 95%;
-    --taupe: 30 15% 75%;
-    --taupe-dark: 30 20% 65%;
-    --slate-blue: 220 20% 60%;
-    --slate-blue-light: 220 25% 85%;
-    --slate-blue-dark: 220 25% 45%;
-    --gold: 45 80% 70%;
-    --gold-light: 45 70% 85%;
-    --sage: 120 20% 70%;
-    --sage-light: 120 15% 85%;
-    --sage-dark: 120 25% 55%;
+    /* Doraemon Brand Colors */
+    --doraemon-blue: 213 94% 68%;
+    --doraemon-blue-dark: 213 94% 58%;
+    --doraemon-white: 0 0% 98%;
+    --doraemon-red: 0 84% 69%;
+    --doraemon-yellow: 46 100% 67%;
+    --door-pink: 340 75% 80%;
+    --door-brown: 25 45% 45%;
+    --portal-purple: 250 80% 60%;
     
     /* Semantic Colors */
-    --background: var(--ivory);
-    --foreground: 220 25% 15%;
+    --background: var(--doraemon-white);
+    --foreground: 213 50% 20%;
 
-    --card: 0 0% 100%;
-    --card-foreground: var(--foreground);
+    --card: var(--doraemon-white);
+    --card-foreground: 213 50% 20%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: var(--foreground);
+    --popover: var(--doraemon-white);
+    --popover-foreground: 213 50% 20%;
 
-    --primary: var(--slate-blue-dark);
-    --primary-foreground: var(--ivory);
+    --primary: var(--doraemon-blue);
+    --primary-foreground: var(--doraemon-white);
 
-    --secondary: var(--taupe);
-    --secondary-foreground: var(--foreground);
+    --secondary: var(--doraemon-white);
+    --secondary-foreground: var(--doraemon-blue);
 
-    --muted: var(--slate-blue-light);
-    --muted-foreground: var(--slate-blue-dark);
+    --muted: 213 20% 95%;
+    --muted-foreground: 213 30% 60%;
 
-    --accent: var(--gold);
-    --accent-foreground: var(--foreground);
+    --accent: var(--doraemon-red);
+    --accent-foreground: var(--doraemon-white);
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: var(--ivory);
+    --destructive: 0 84% 60%;
+    --destructive-foreground: var(--doraemon-white);
 
-    --border: var(--taupe);
-    --input: var(--taupe);
-    --ring: var(--slate-blue);
+    --border: 213 30% 85%;
+    --input: 213 30% 85%;
+    --ring: var(--doraemon-blue);
 
     --radius: 0.75rem;
 
     /* Gradients */
-    --gradient-hero: linear-gradient(135deg, hsl(var(--slate-blue-light)), hsl(var(--gold-light)));
-    --gradient-card: linear-gradient(180deg, hsl(var(--ivory)), hsl(var(--taupe)));
-    --gradient-accent: linear-gradient(135deg, hsl(var(--gold)), hsl(var(--sage)));
-    --gradient-overlay: linear-gradient(0deg, rgba(0,0,0,0.5), rgba(0,0,0,0.1));
+    --gradient-hero: linear-gradient(135deg, hsl(var(--doraemon-blue)), hsl(var(--doraemon-blue-dark)));
+    --gradient-magical: linear-gradient(135deg, hsl(var(--doraemon-blue)), hsl(var(--portal-purple)));
+    --gradient-portal: radial-gradient(circle, hsl(var(--portal-purple) / 0.8), hsl(var(--doraemon-blue) / 0.6));
+    --gradient-door: linear-gradient(180deg, hsl(var(--door-pink)), hsl(var(--door-brown)));
 
     /* Shadows */
     --shadow-soft: 0 4px 20px hsl(var(--slate-blue) / 0.1);
@@ -98,8 +95,16 @@
     background: var(--gradient-accent);
   }
   
-  .bg-gradient-overlay {
-    background: var(--gradient-overlay);
+  .bg-gradient-magical {
+    background: var(--gradient-magical);
+  }
+  
+  .bg-gradient-portal {
+    background: var(--gradient-portal);
+  }
+  
+  .bg-gradient-door {
+    background: var(--gradient-door);
   }
 
   /* Shadow Utilities */
@@ -159,21 +164,50 @@
   }
 }
 
-@keyframes pulse-glow {
-  0%, 100% {
-    box-shadow: 0 0 5px hsl(var(--gold) / 0.5);
+@keyframes doorOpen {
+  0% {
+    transform: perspective(800px) rotateY(0deg);
   }
-  50% {
-    box-shadow: 0 0 20px hsl(var(--gold) / 0.8);
+  100% {
+    transform: perspective(800px) rotateY(-120deg);
   }
 }
 
-@keyframes rotate-globe {
-  from {
-    transform: rotate(0deg);
+@keyframes portalSwirl {
+  0% {
+    transform: rotate(0deg) scale(1);
+    opacity: 0.6;
   }
-  to {
-    transform: rotate(360deg);
+  50% {
+    transform: rotate(180deg) scale(1.1);
+    opacity: 0.8;
+  }
+  100% {
+    transform: rotate(360deg) scale(1);
+    opacity: 0.6;
+  }
+}
+
+@keyframes gadgetFloat {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  33% {
+    transform: translateY(-15px) rotate(5deg);
+  }
+  66% {
+    transform: translateY(-8px) rotate(-3deg);
+  }
+}
+
+@keyframes sparkle {
+  0%, 100% {
+    opacity: 0;
+    transform: scale(0);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1);
   }
 }
 
@@ -186,10 +220,18 @@
   animation: float 3s ease-in-out infinite;
 }
 
-.animate-pulse-glow {
-  animation: pulse-glow 2s ease-in-out infinite;
+.animate-door-open {
+  animation: doorOpen 2s ease-in-out infinite alternate;
 }
 
-.animate-rotate-globe {
-  animation: rotate-globe 20s linear infinite;
+.animate-portal-swirl {
+  animation: portalSwirl 8s linear infinite;
+}
+
+.animate-gadget-float {
+  animation: gadgetFloat 4s ease-in-out infinite;
+}
+
+.animate-sparkle {
+  animation: sparkle 2s ease-in-out infinite;
 }
