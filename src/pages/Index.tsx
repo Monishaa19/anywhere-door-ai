@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import HeroSection from '@/components/HeroSection';
 import UserDetailsForm from '@/components/UserDetailsForm';
 import DestinationGallery from '@/components/DestinationGallery';
@@ -7,6 +7,7 @@ import HowItWorks from '@/components/HowItWorks';
 import Footer from '@/components/Footer';
 import Navigation from '@/components/Navigation';
 import { Toaster } from '@/components/ui/toaster';
+import { useToast } from '@/hooks/use-toast';
 
 type AppStep = 'hero' | 'userDetails' | 'destinations' | 'tripPlanner';
 
@@ -14,6 +15,7 @@ const Index = () => {
   const [currentStep, setCurrentStep] = useState<AppStep>('hero');
   const [userName, setUserName] = useState('');
   const [userEmail, setUserEmail] = useState('');
+  const { toast } = useToast();
 
   const handlePlanTripClick = () => {
     setCurrentStep('userDetails');
@@ -32,6 +34,69 @@ const Index = () => {
   const handleStepChange = (step: AppStep) => {
     setCurrentStep(step);
   };
+
+  // VAPI webhook handler for processing voice input
+  const handleVapiTripRequest = async (tripData: any) => {
+    try {
+      // Format the data to match the TripPlannerForm structure
+      const budgetMapping: { [key: string]: string } = {
+        'budget': 'Under ₹8,000/day',
+        'low': 'Under ₹8,000/day',
+        'cheap': 'Under ₹8,000/day',
+        'mid-range': '₹8,000-25,000/day',
+        'medium': '₹8,000-25,000/day',
+        'moderate': '₹8,000-25,000/day',
+        'luxury': '₹25,000+/day',
+        'expensive': '₹25,000+/day',
+        'high': '₹25,000+/day'
+      };
+
+      const formattedData = {
+        destination: tripData.destination || '',
+        currentCity: tripData.currentCity || tripData.from || '',
+        startDate: tripData.startDate || '',
+        endDate: tripData.endDate || '',
+        duration: tripData.duration ? [parseInt(tripData.duration)] : [7],
+        budget: budgetMapping[tripData.budget?.toLowerCase()] || '₹8,000-25,000/day',
+        travelStyle: tripData.travelStyle || [],
+        groupSize: tripData.groupSize || '2',
+        transportMode: tripData.transportMode || 'flight',
+        name: tripData.name || userName || '',
+        email: tripData.email || userEmail || ''
+      };
+
+      const response = await fetch('https://thenameismonisha.app.n8n.cloud/webhook-test/190ece94-13f5-4a98-a50a-c97ccd4459da', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formattedData)
+      });
+
+      if (response.ok) {
+        toast({
+          title: "Success!",
+          description: "Your personalized itinerary will be sent to your email shortly!",
+        });
+        return "Great! I've processed your trip request. Your personalized itinerary will be sent to your email shortly!";
+      } else {
+        throw new Error('Failed to submit trip request');
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Something went wrong processing your trip request. Please try again.",
+        variant: "destructive"
+      });
+      return "I'm sorry, there was an error processing your trip request. Please try again or use the form on the website.";
+    }
+  };
+
+  // Setup VAPI client tools
+  useEffect(() => {
+    // Setup global function for VAPI to call
+    (window as any).handleTripPlanning = handleVapiTripRequest;
+  }, [userName, userEmail]);
 
   const renderCurrentStep = () => {
     switch (currentStep) {
