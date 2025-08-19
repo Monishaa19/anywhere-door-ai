@@ -124,6 +124,19 @@
     transition: var(--transition-bounce);
   }
 
+  /* VAPI Widget Styling */
+  vapi-widget {
+    border-radius: 50% !important;
+    background: hsl(var(--primary)) !important;
+    box-shadow: var(--shadow-elegant) !important;
+    transition: var(--transition-smooth) !important;
+  }
+  
+  vapi-widget:hover {
+    transform: scale(1.1) !important;
+    box-shadow: 0 0 25px hsl(var(--primary) / 0.4) !important;
+  }
+
   /* Hover Effects */
   .hover-lift:hover {
     transform: translateY(-4px);

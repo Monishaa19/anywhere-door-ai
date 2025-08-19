@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import HeroSection from '@/components/HeroSection';
 import UserDetailsForm from '@/components/UserDetailsForm';
 import DestinationGallery from '@/components/DestinationGallery';
@@ -14,6 +14,105 @@ const Index = () => {
   const [currentStep, setCurrentStep] = useState<AppStep>('hero');
   const [userName, setUserName] = useState('');
   const [userEmail, setUserEmail] = useState('');
+
+  // VAPI data collection and webhook integration
+  useEffect(() => {
+    const handleVapiMessage = async (event: any) => {
+      if (event.detail && event.detail.message) {
+        const message = event.detail.message;
+        
+        // Check if this is a function call or contains travel data
+        if (message.type === 'function-call' || 
+            (message.role === 'assistant' && message.content && 
+             (message.content.includes('destination') || 
+              message.content.includes('travel') || 
+              message.content.includes('trip')))) {
+          
+          try {
+            // Extract travel information from the conversation
+            const travelData = {
+              destination: extractFromMessage(message.content, 'destination'),
+              currentCity: extractFromMessage(message.content, 'current city') || extractFromMessage(message.content, 'from'),
+              startDate: extractFromMessage(message.content, 'start date') || extractFromMessage(message.content, 'departure'),
+              endDate: extractFromMessage(message.content, 'end date') || extractFromMessage(message.content, 'return'),
+              budget: mapBudgetFromMessage(message.content),
+              groupSize: extractFromMessage(message.content, 'group size') || extractFromMessage(message.content, 'people') || '2',
+              transportMode: extractFromMessage(message.content, 'transport') || extractFromMessage(message.content, 'travel by') || 'flight',
+              travelStyle: extractTravelStyles(message.content),
+              duration: calculateDuration(extractFromMessage(message.content, 'start date'), extractFromMessage(message.content, 'end date')) || [7],
+              name: userName || '',
+              email: userEmail || '',
+              source: 'vapi-voice'
+            };
+
+            // Only send if we have meaningful travel data
+            if (travelData.destination || travelData.currentCity) {
+              const response = await fetch('https://thenameismonisha.app.n8n.cloud/webhook-test/190ece94-13f5-4a98-a50a-c97ccd4459da', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(travelData)
+              });
+
+              if (!response.ok) {
+                console.error('Failed to send VAPI data to webhook');
+              }
+            }
+          } catch (error) {
+            console.error('Error processing VAPI message:', error);
+          }
+        }
+      }
+    };
+
+    // Listen for VAPI messages
+    window.addEventListener('vapi-message', handleVapiMessage);
+    
+    return () => {
+      window.removeEventListener('vapi-message', handleVapiMessage);
+    };
+  }, [userName, userEmail]);
+
+  // Helper functions for data extraction
+  const extractFromMessage = (content: string, field: string): string => {
+    const regex = new RegExp(`${field}[:\\s]+([^,\\.\\n]+)`, 'i');
+    const match = content.match(regex);
+    return match ? match[1].trim() : '';
+  };
+
+  const mapBudgetFromMessage = (content: string): string => {
+    const lowerContent = content.toLowerCase();
+    if (lowerContent.includes('budget') || lowerContent.includes('cheap') || lowerContent.includes('affordable')) {
+      return 'Under ₹8,000/day';
+    } else if (lowerContent.includes('luxury') || lowerContent.includes('premium') || lowerContent.includes('expensive')) {
+      return '₹25,000+/day';
+    }
+    return '₹8,000-25,000/day'; // default mid-range
+  };
+
+  const extractTravelStyles = (content: string): string[] => {
+    const styles = ['Adventure', 'Relaxation', 'Cultural', 'Food & Dining', 'Nightlife', 'Nature & Wildlife', 'Photography', 'Shopping'];
+    const foundStyles: string[] = [];
+    const lowerContent = content.toLowerCase();
+    
+    styles.forEach(style => {
+      if (lowerContent.includes(style.toLowerCase())) {
+        foundStyles.push(style);
+      }
+    });
+    
+    return foundStyles;
+  };
+
+  const calculateDuration = (startDate: string, endDate: string): number[] | null => {
+    if (!startDate || !endDate) return null;
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    const diffTime = Math.abs(end.getTime() - start.getTime());
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return [Math.max(1, diffDays)];
+  };
 
   const handlePlanTripClick = () => {
     setCurrentStep('userDetails');
@@ -65,7 +164,18 @@ const Index = () => {
       <Navigation currentStep={currentStep} onStepChange={handleStepChange} />
       {renderCurrentStep()}
       <Toaster />
-      <vapi-widget assistant-id="f3e5e8d1-dc15-497f-b187-904279398508" public-key="a93b060a-e811-4d43-8ca2-23ad3a3d9e68"></vapi-widget>
+      <vapi-widget 
+        assistant-id="f3e5e8d1-dc15-497f-b187-904279398508" 
+        public-key="a93b060a-e811-4d43-8ca2-23ad3a3d9e68"
+        style={{ 
+          position: 'fixed', 
+          bottom: '20px', 
+          right: '20px', 
+          width: '80px', 
+          height: '80px',
+          zIndex: 1000 
+        }}
+      ></vapi-widget>
     </div>
   );
 };
