@@ -5,6 +5,7 @@ import DestinationGallery from '@/components/DestinationGallery';
 import TripPlannerForm from '@/components/TripPlannerForm';
 import HowItWorks from '@/components/HowItWorks';
 import Footer from '@/components/Footer';
+import Navigation from '@/components/Navigation';
 import { Toaster } from '@/components/ui/toaster';
 
 type AppStep = 'hero' | 'userDetails' | 'destinations' | 'tripPlanner';
@@ -26,6 +27,10 @@ const Index = () => {
 
   const handleDestinationClick = () => {
     setCurrentStep('tripPlanner');
+  };
+
+  const handleStepChange = (step: AppStep) => {
+    setCurrentStep(step);
   };
 
   const renderCurrentStep = () => {
@@ -57,6 +62,7 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <Navigation currentStep={currentStep} onStepChange={handleStepChange} />
       {renderCurrentStep()}
       <Toaster />
     </div>
