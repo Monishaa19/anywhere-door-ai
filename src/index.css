@@ -193,3 +193,26 @@
 .animate-rotate-globe {
   animation: rotate-globe 20s linear infinite;
 }
+
+/* VAPI Widget Styling */
+vapi-widget {
+  position: fixed !important;
+  bottom: 20px !important;
+  right: 20px !important;
+  z-index: 9999 !important;
+  width: 60px !important;
+  height: 60px !important;
+  border-radius: 50% !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15) !important;
+  background: hsl(var(--primary)) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  transition: all 0.3s ease !important;
+}
+
+vapi-widget:hover {
+  transform: scale(1.1) !important;
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.2) !important;
+}

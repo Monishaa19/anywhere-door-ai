@@ -96,6 +96,16 @@ const Index = () => {
   useEffect(() => {
     // Setup global function for VAPI to call
     (window as any).handleTripPlanning = handleVapiTripRequest;
+    
+    // Check if VAPI script loaded
+    const checkVapiLoad = () => {
+      console.log('VAPI Widget Elements:', document.querySelectorAll('vapi-widget'));
+      console.log('VAPI Script loaded:', typeof (window as any).Vapi);
+    };
+    
+    // Check immediately and after a delay
+    checkVapiLoad();
+    setTimeout(checkVapiLoad, 2000);
   }, [userName, userEmail]);
 
   const renderCurrentStep = () => {
