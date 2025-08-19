@@ -9,6 +9,9 @@ import santorini from '@/assets/destinations/santorini.jpg';
 import greatWall from '@/assets/destinations/great-wall.jpg';
 import machuPicchu from '@/assets/destinations/machu-picchu.jpg';
 import sydneyOpera from '@/assets/destinations/sydney-opera.jpg';
+import angkorWat from '@/assets/destinations/angkor-wat.jpg';
+import neuschwanstein from '@/assets/destinations/neuschwanstein.jpg';
+import christRedeemer from '@/assets/destinations/christ-redeemer.jpg';
 
 const destinations = [
   { name: 'Burj Khalifa', location: 'Dubai', image: burjKhalifa },
@@ -20,6 +23,9 @@ const destinations = [
   { name: 'Great Wall', location: 'China', image: greatWall },
   { name: 'Machu Picchu', location: 'Peru', image: machuPicchu },
   { name: 'Sydney Opera House', location: 'Australia', image: sydneyOpera },
+  { name: 'Angkor Wat', location: 'Cambodia', image: angkorWat },
+  { name: 'Neuschwanstein Castle', location: 'Bavaria, Germany', image: neuschwanstein },
+  { name: 'Christ the Redeemer', location: 'Rio de Janeiro, Brazil', image: christRedeemer },
 ];
 
 interface DestinationGalleryProps {
