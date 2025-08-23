@@ -5,12 +5,12 @@ Anywhere door is an AI powered travel planner made that generates itenary for yo
 
 ## Key Features
 
-*   ** AI-Powered travel planner Search**: generetes itenary for your trips.
-*   ** Fast and Responsive
-*   ** Supports both verbal and textual input
-*   ** Has voice assistants.
-*   ** Email Support
-*   ** Google sheets logging
+*  AI-Powered travel planner Search**: generetes itenary for your trips.
+*  Fast and Responsive
+*  Supports both verbal and textual input
+*  Has voice assistants.
+*  Email Support
+*  Google sheets logging
 
 ## What technologies are used for this project?
 
