@@ -9,6 +9,9 @@ import santorini from '@/assets/destinations/santorini.jpg';
 import greatWall from '@/assets/destinations/great-wall.jpg';
 import machuPicchu from '@/assets/destinations/machu-picchu.jpg';
 import sydneyOpera from '@/assets/destinations/sydney-opera.jpg';
+import angkorWat from '@/assets/destinations/angkor-wat.jpg';
+import neuschwanstein from '@/assets/destinations/neuschwanstein.jpg';
+import christRedeemer from '@/assets/destinations/christ-redeemer.jpg';
 
 const destinations = [
   { name: 'Burj Khalifa', location: 'Dubai', image: burjKhalifa },
@@ -20,6 +23,9 @@ const destinations = [
   { name: 'Great Wall', location: 'China', image: greatWall },
   { name: 'Machu Picchu', location: 'Peru', image: machuPicchu },
   { name: 'Sydney Opera House', location: 'Australia', image: sydneyOpera },
+  { name: 'Angkor Wat', location: 'Cambodia', image: angkorWat },
+  { name: 'Neuschwanstein Castle', location: 'Bavaria, Germany', image: neuschwanstein },
+  { name: 'Christ the Redeemer', location: 'Rio de Janeiro, Brazil', image: christRedeemer },
 ];
 
 interface DestinationGalleryProps {
@@ -27,7 +33,24 @@ interface DestinationGalleryProps {
 }
 
 const DestinationGallery: React.FC<DestinationGalleryProps> = ({ onDestinationClick }) => {
-  return (
+    
+    // Dynamically load the VAPI widget script
+    const script = document.createElement('script');
+    script.src = 'https://unpkg.com/@vapi-ai/client-sdk-react/dist/embed/widget.umd.js';
+    script.async = true;
+    script.type = 'text/javascript';
+    document.body.appendChild(script);
+
+    // Dynamically load the VAPI widget styles
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = 'https://unpkg.com/@vapi-ai/client-sdk-react/dist/embed/styles.css';
+    document.head.appendChild(link);
+
+   
+
+
+return (
     <section className="py-20 px-4 bg-background">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-16">
@@ -87,6 +110,33 @@ const DestinationGallery: React.FC<DestinationGalleryProps> = ({ onDestinationCl
           </Button>
         </div>
       </div>
+
+            <vapi-widget
+              public-key={import.meta.env.VITE_VAPI_PUBLIC_KEY}
+              assistant-id={import.meta.env.VITE_VAPI_ASSISTANT_ID}
+              mode="voice"
+              theme="dark"
+              base-bg-color="#000000"
+              accent-color="#14B8A6"
+              cta-button-color="#000000"
+              cta-button-text-color="#ffffff"
+              border-radius="large"
+              size="full"
+              position="bottom-right"
+              title="TALK WITH DORA"
+              start-button-text="Start"
+              end-button-text="End Call"
+              cta-subtitle="voice enabled input support"
+              chat-first-message="Hey, How can I help you today?"
+              chat-placeholder="Type your message..."
+              voice-show-transcript="true"
+              consent-required="true"
+              consent-title="Terms and conditions"
+              consent-content="By clicking Agree, and each time I interact with this AI agent, I consent to the recording, storage, and sharing of my communications with third-party service providers, and as otherwise described in our Terms of Service."
+              consent-storage-key="vapi_widget_consent"
+            ></vapi-widget>
+
+<script src="https://unpkg.com/@vapi-ai/client-sdk-react/dist/embed/widget.umd.js" async type="text/javascript"></script>
     </section>
   );
 };

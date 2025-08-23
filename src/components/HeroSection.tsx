@@ -1,7 +1,8 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
-import heroBg from '@/assets/hero-bg.jpg';
+// import heroBg from '@/assets/hero-bg.jpg';f
+import heroBg from "@/assets/hero-background.jpg";
 
 interface HeroSectionProps {
   onPlanTripClick: () => void;
@@ -46,7 +47,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onPlanTripClick }) => {
           style={{ animationDelay: '0.6s' }}
           onClick={onPlanTripClick}
         >
-          Plan My Trip
+          Open the Door
           <ArrowRight className="ml-2" />
         </Button>
       </div>

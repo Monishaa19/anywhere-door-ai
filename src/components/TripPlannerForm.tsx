@@ -146,7 +146,7 @@ const TripPlannerForm: React.FC<TripPlannerFormProps> = ({ userName, userEmail }
         email: userEmail || ''
       };
 
-      const response = await fetch('https://thenameismonisha.app.n8n.cloud/webhook-test/190ece94-13f5-4a98-a50a-c97ccd4459da', {
+      const response = await fetch(import.meta.env.VITE_GENERATE_LOCATION_URL, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -156,8 +156,8 @@ const TripPlannerForm: React.FC<TripPlannerFormProps> = ({ userName, userEmail }
 
       if (response.ok) {
         toast({
-          title: "Success!",
-          description: "Your personalized itinerary will be sent to your email shortly!",
+          title: "Voila!",
+          description: "Please check your email shortly",
         });
       } else {
         throw new Error('Failed to submit form');
@@ -165,7 +165,7 @@ const TripPlannerForm: React.FC<TripPlannerFormProps> = ({ userName, userEmail }
     } catch (error) {
       toast({
         title: "Error",
-        description: "Something went wrong. Please try again.",
+        description: "Workflow is dormant. Backend error",
         variant: "destructive"
       });
     } finally {
@@ -438,6 +438,31 @@ const TripPlannerForm: React.FC<TripPlannerFormProps> = ({ userName, userEmail }
             </form>
           </CardContent>
         </Card>
+
+              <vapi-widget
+              public-key={import.meta.env.VITE_VAPI_PUBLIC_KEY}
+              assistant-id={import.meta.env.VITE_VAPI_ASSISTANT_ID}
+              mode="voice"
+              theme="dark"
+              base-bg-color="#000000"
+              accent-color="#14B8A6"
+              cta-button-color="#000000"
+              cta-button-text-color="#ffffff"
+              border-radius="large"
+              size="full"
+              position="bottom-right"
+              title="TALK WITH DORA"
+              start-button-text="Start"
+              end-button-text="End Call"
+              cta-subtitle="voice enabled input support"
+              chat-first-message="Hey, How can I help you today?"
+              chat-placeholder="Type your message..."
+              voice-show-transcript="true"
+              consent-required="true"
+              consent-title="Terms and conditions"
+              consent-content="By clicking Agree, and each time I interact with this AI agent, I consent to the recording, storage, and sharing of my communications with third-party service providers, and as otherwise described in our Terms of Service."
+              consent-storage-key="vapi_widget_consent"
+            ></vapi-widget>
       </div>
     </section>
   );

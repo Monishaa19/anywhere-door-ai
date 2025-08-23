@@ -18,7 +18,7 @@ const UserDetailsForm: React.FC<UserDetailsFormProps> = ({ onUserDetailsSubmit }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!name.trim() || !email.trim()) {
       toast({
         title: "Missing Information",
@@ -38,17 +38,34 @@ const UserDetailsForm: React.FC<UserDetailsFormProps> = ({ onUserDetailsSubmit }
     }
 
     setIsLoading(true);
-    
-    // Store user details (you can add actual storage logic here)
+
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 500));
-      
+      // Send POST request to the specified URL
+      const response = await fetch(
+        import.meta.env.VITE_GENERATE_LOCATION_URL,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            name,
+            email,
+            [`${name}`]: email, // Add "name: email" in the JSON body
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error('Failed to send data');
+      }
+
       toast({
         title: "Welcome aboard!",
         description: `Hi ${name}, let's plan your perfect trip!`,
       });
-      
+
+      // Pass the name and email to the parent component
       onUserDetailsSubmit(name, email);
     } catch (error) {
       toast({
@@ -88,7 +105,7 @@ const UserDetailsForm: React.FC<UserDetailsFormProps> = ({ onUserDetailsSubmit }
                 className="transition-smooth focus:shadow-soft"
               />
             </div>
-            
+
             <div className="space-y-2">
               <Label htmlFor="email" className="flex items-center gap-2">
                 <Mail className="w-4 h-4" />
@@ -103,16 +120,16 @@ const UserDetailsForm: React.FC<UserDetailsFormProps> = ({ onUserDetailsSubmit }
                 className="transition-smooth focus:shadow-soft"
               />
             </div>
-            
-            <Button 
-              type="submit" 
-              className="w-full" 
+
+            <Button
+              type="submit"
+              className="w-full"
               variant="hero"
               size="lg"
               disabled={isLoading}
             >
               {isLoading ? (
-                "Setting up your journey..."
+                "Setting up your journey...Please check for mail for further details"
               ) : (
                 <>
                   Continue to Destinations

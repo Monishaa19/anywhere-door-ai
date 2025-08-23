@@ -126,15 +126,34 @@
 
   /* VAPI Widget Styling */
   vapi-widget {
+    /* visual styling */
+    position: fixed !important;
+  bottom: 24px !important;
+  right: 24px !important;
+  width:20rem !important;;
     border-radius: 50% !important;
     background: hsl(var(--primary)) !important;
     box-shadow: var(--shadow-elegant) !important;
-    transition: var(--transition-smooth) !important;
+
+    /* prevent flicker on hover */
+    transform-origin: center center !important;
+    will-change: transform, box-shadow !important;
+    -webkit-backface-visibility: hidden !important;
+    backface-visibility: hidden !important;
+    pointer-events: auto !important;
+
+    /* transition only transform/box-shadow to avoid layout reflow */
+    transition: transform 180ms cubic-bezier(0.4,0,0.2,1), box-shadow 220ms cubic-bezier(0.4,0,0.2,1) !important;
+    z-index: 99999 !important;
+    visibility: visible !important;
+    display: block !important;
   }
   
+  /* gentler hover effect that won't move the hit area out from under the cursor */
   vapi-widget:hover {
-    transform: scale(1.1) !important;
-    box-shadow: 0 0 25px hsl(var(--primary) / 0.4) !important;
+    transform: translateY(-6px) !important;    /* small translate, no big scale */
+    box-shadow: 0 12px 35px hsl(var(--primary) / 0.45) !important;
+    outline: none !important;
   }
 
   /* Hover Effects */
@@ -206,3 +225,4 @@
 .animate-rotate-globe {
   animation: rotate-globe 20s linear infinite;
 }
+
