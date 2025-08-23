@@ -146,7 +146,7 @@ const TripPlannerForm: React.FC<TripPlannerFormProps> = ({ userName, userEmail }
         email: userEmail || ''
       };
 
-      const response = await fetch(import.meta.env.VITE_GENERATE_LOCATION_URL, {
+      const response = await fetch('https://thenameismonisha.app.n8n.cloud/webhook/190ece94-13f5-4a98-a50a-c97ccd4459da', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -440,8 +440,8 @@ const TripPlannerForm: React.FC<TripPlannerFormProps> = ({ userName, userEmail }
         </Card>
 
               <vapi-widget
-              public-key={import.meta.env.VITE_VAPI_PUBLIC_KEY}
-              assistant-id={import.meta.env.VITE_VAPI_ASSISTANT_ID}
+              public-key="a93b060a-e811-4d43-8ca2-23ad3a3d9e68"
+              assistant-id="f3e5e8d1-dc15-497f-b187-904279398508"
               mode="voice"
               theme="dark"
               base-bg-color="#000000"
