@@ -42,7 +42,7 @@ const UserDetailsForm: React.FC<UserDetailsFormProps> = ({ onUserDetailsSubmit }
     try {
       // Send POST request to the specified URL
       const response = await fetch(
-        import.meta.env.VITE_GENERATE_LOCATION_URL,
+        'https://thenameismonisha.app.n8n.cloud/webhook/190ece94-13f5-4a98-a50a-c97ccd4459da',
         {
           method: 'POST',
           headers: {

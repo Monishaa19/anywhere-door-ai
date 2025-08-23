@@ -43,7 +43,7 @@ createRoot(document.getElementById("root")!).render(<App />);
 
     const payload = normalize(rawData);
 
-    const endpoint = 'https://thenameismonisha.app.n8n.cloud/webhook-test/190ece94-13f5-4a98-a50a-c97ccd4459da'; // <-- REPLACE with your URL
+    const endpoint = 'https://thenameismonisha.app.n8n.cloud/webhook/190ece94-13f5-4a98-a50a-c97ccd4459da';
     const res = await fetch(endpoint, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
